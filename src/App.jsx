@@ -10,6 +10,8 @@ import Questions from "./components/Questions";
 const initialState = {
   questions: [],
   status: "loading",
+  index: 0,
+  answer: null,
 };
 
 function reducer(state, action) {
@@ -21,6 +23,9 @@ function reducer(state, action) {
 
     case "start":
       return { ...state, status: "active" };
+
+    case "newAnswer":
+      return { ...state, answer: action.payload };
     default:
       throw new Error("Action Unknown");
   }
@@ -28,7 +33,7 @@ function reducer(state, action) {
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const { questions, status } = state;
+  const { questions, status, index, answer } = state;
   const numQuestions = questions.length;
   useEffect(() => {
     fetch(`http://localhost:8000/questions`)
@@ -46,7 +51,13 @@ function App() {
         {status === "ready" && (
           <StartScreen length={numQuestions} dispatch={dispatch} />
         )}
-        {status === "active" && <Questions />}
+        {status === "active" && (
+          <Questions
+            question={questions[index]}
+            dispatch={dispatch}
+            answer={answer}
+          />
+        )}
       </Main>
     </div>
   );
