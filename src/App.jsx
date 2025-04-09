@@ -11,6 +11,7 @@ import Progress from "./components/Progress";
 import FinishedScreen from "./components/FinishedScreen";
 import Footer from "./components/Footer";
 import Timer from "./components/Timer";
+import quizQuestions from "../data/questions";
 
 const initialState = {
   questions: [],
@@ -96,10 +97,9 @@ function App() {
     0,
   );
   useEffect(() => {
-    fetch(`http://localhost:8000/questions`)
-      .then((res) => res.json())
-      .then((data) => dispatch({ type: "dataReceived", payload: data }))
-      .catch((err) => dispatch({ type: "dataFailed" }));
+    if (quizQuestions)
+      dispatch({ type: "dataReceived", payload: quizQuestions.questions });
+    else dispatch({ type: "dataFailed" });
   }, [restart]);
 
   return (
